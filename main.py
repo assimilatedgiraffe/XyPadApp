@@ -3,6 +3,7 @@ from kivy.lib import osc
 from kivy.lib.osc import oscAPI
 from kivy.uix.button import *
 from kivy.uix.stacklayout import StackLayout
+from kivy.graphics import *
 
 oscIpAddress = '192.168.1.7'
 oscPort = 9000
@@ -20,8 +21,12 @@ class XyPad(Button):
             print(touch.pos)
             rel_pos = self.to_widget(*touch.pos, relative=True)
             x_scaled, y_scaled = rel_pos[0]/self.width , rel_pos[1] / self.height
+
             osc.sendMsg(self.x_msg, [x_scaled, ], ipAddr=oscIpAddress, port=oscPort)
             osc.sendMsg(self.y_msg, [y_scaled, ], ipAddr=oscIpAddress, port=oscPort)
+
+            with self.canvas:
+                Rectangle(pos=(rel_pos[0], self.y), size=(5, self.height))
 
 
 class xypadApp(App):
