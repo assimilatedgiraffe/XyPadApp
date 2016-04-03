@@ -24,8 +24,18 @@ class XyPad(Button):
 #        self.y_param_value = BoundedNumericProperty(0, min=0, max=1, errorhandler=lambda x: 1 if x > 1 else 0)
 #        lines = []
         with self.canvas:
-            self.lines = [Rectangle(pos=(self.x_param_value * self.width, self.y), size=(3, self.height)),
-                          Rectangle(pos=(self.x, self.y_param_value * self.width), size=(self.width, 3))]
+            Color(0, 1, 0, 1)  # set the colour to green
+            self.lines = [Rectangle(), Rectangle(), Ellipse(size=(50,50))]
+
+        self.bind(pos=self.update_lines, size=self.update_lines)
+
+
+    def update_lines(self, *args):
+        self.lines[0].pos = self.x + 0.5*self.width, self.y
+        self.lines[0].size = (3, self.height)
+        self.lines[1].pos = self.x, self.y + 0.5*self.height
+        self.lines[1].size = (self.width, 3)
+        self.lines[2].pos = self.center_x - 25, self.center_y - 25
 
 #     def on_touch_down(self, touch):
 #         if self.collide_point(*touch.pos):
@@ -35,6 +45,8 @@ class XyPad(Button):
 #                     Rectangle(pos=(touch.x, self.y), size=(3, self.height)),
 #                     Rectangle(pos=(self.x, touch.y), size=(self.width, 3))]
 #                     Point(points=(touch.x, touch.y), pointsize=5)]
+
+
 
 
     def on_touch_move(self, touch):
@@ -50,10 +62,12 @@ class XyPad(Button):
             self.y_param_value = y_scaled
 
     def on_x_param_value(self, obj, value):
-        self.lines[0].pos = value*self.width, self.y
+        self.lines[0].pos = self.x + value*self.width, self.y
+        self.lines[2].pos = self.x + value*self.width - 25, self.lines[2].pos[1]
 
     def on_y_param_value(self, obj, value):
-        self.lines[1].pos = 0, value*self.height
+        self.lines[1].pos = self.x, self.y + value*self.height
+        self.lines[2].pos = self.lines[2].pos[0], self.y + value*self.height - 25,
 
     # def on_touch_up(self, touch):
     #     #if self.collide_point(*touch.pos):
